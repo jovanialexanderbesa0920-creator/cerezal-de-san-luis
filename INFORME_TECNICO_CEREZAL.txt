@@ -1,0 +1,92 @@
+================================================================================
+INFORME TÉCNICO DETALLADO: CEREZAL DE SAN LUIS - ECOSISTEMA RESIDENCIAL
+================================================================================
+
+1. DESCRIPCIÓN GENERAL
+--------------------------------------------------------------------------------
+Cerezal de San Luis es una plataforma web premium diseñada para la gestión 
+integral de conjuntos residenciales de alta gama. El sistema centraliza la 
+comunicación entre la portería (operativo) y los residentes, facilitando el 
+control de correspondencia, visitantes, vehículos y comunicaciones de emergencia.
+
+El enfoque principal del proyecto es la "Excelencia Operativa" y la "Seguridad 
+Privada", utilizando una interfaz de usuario minimalista y sofisticada 
+(Glassmorphism) inspirada en los estándares de diseño de Apple.
+
+2. ARQUITECTURA TECNOLÓGICA (TECH STACK)
+--------------------------------------------------------------------------------
+El proyecto utiliza una arquitectura moderna de Single Page Application (SPA) 
+con servicios en la nube para backend:
+
+• Frontend: React.js + Vite (Máxima velocidad de compilación y ejecución).
+• Estado Global: React Context API (AuthContext para manejo de sesiones).
+• Estilos: Tailwind CSS v4 + Vanilla CSS (Tokens de diseño personalizados).
+• Iconografía: Lucide React.
+• Backend/Base de Datos: Firebase Firestore (NoSQL, tiempo real).
+• Autenticación: Firebase Auth (Gestión de identidades con alias de correo).
+• Backend Serverless: Firebase Cloud Functions (Node.js).
+• Integraciones: Twilio (Puente de llamadas seguras).
+
+3. ESTRUCTURA DE DATOS (FIRESTORE)
+--------------------------------------------------------------------------------
+El sistema organiza la información en las siguientes colecciones clave:
+
+• users: Almacena los perfiles (uid, username, unidadId, role, createdAt).
+• visitors: Registro de visitas (nombre, ID, unidadId, estado, horas de entrada/salida).
+• packages: Control de correspondencia y recibos (tipo, descripción, estado).
+• telefonos: Directorio digital del conjunto (nombres, números, categorías).
+• visitor_slots: Monitoreo en tiempo real de cupos de parqueo para visitantes.
+
+4. FUNCIONALIDADES CORE
+--------------------------------------------------------------------------------
+
+A. SISTEMA DE ROLES Y SEGURIDAD:
+   - Administrador (Portería): Control total del flujo de la unidad. Registro de 
+     correspondencia, gestión de parqueaderos y monitoreo de accesos.
+   - Residente: Acceso exclusivo a su información privada, anuncio de visitas 
+     y directorio de contacto directo.
+
+B. MÓDULO DE VISITANTES (SEGURIDAD DE ACCESO):
+   - Flujo de "Visita Esperada": El residente pre-autoriza un ingreso.
+   - Flujo de "Visita Sorpresa": El portero registra el ingreso manualmente.
+   - Control de Tiempos: Timestamp exacto de ingreso y salida para auditoría.
+
+C. GESTIÓN DE CORRESPONDENCIA:
+   - Clasificación entre Paquetes, Sobres y Recibos Públicos.
+   - Notificación visual instantánea al residente sobre entregas pendientes.
+
+D. PUENTE DE LLAMADAS SEGURAS (MODO UBER):
+   - Implementado vía Cloud Functions + Twilio.
+   - Permite que el portero llame al residente sin que ninguno de los dos 
+     conozca el número personal del otro, protegiendo la privacidad.
+
+E. MONITOREO DE PARQUEADEROS:
+   - Visualización gráfica de 12 cupos de parqueo para visitantes.
+   - Estado de ocupación en tiempo real (Disponible vs Ocupado).
+
+5. LÓGICA DE NEGOCIO DESTACADA
+--------------------------------------------------------------------------------
+
+• Alias de Autenticación: Para simplificar el uso, el sistema transforma 
+  nombres de usuario en correos electrónicos internos (usuario@cerezal.com).
+  
+• Registro Multi-App: El sistema utiliza una instancia secundaria de Firebase 
+  (SecondaryApp) que permite al administrador registrar nuevos residentes 
+  sin tener que cerrar su propia sesión activa.
+
+• Inicialización Automatizada (Bootstrapping): La función 'setupFirestore' 
+  permite configurar desde cero toda la estructura de la base de datos, 
+  creando la cuenta maestra de portería, los cupos de parqueo y el 
+  directorio inicial en un solo clic.
+
+6. PROCESO DE DESPLIEGUE
+--------------------------------------------------------------------------------
+La aplicación está optimizada para ser desplegada en Firebase Hosting:
+1. Build: 'npm run build' (Genera el bundle optimizado).
+2. Deploy: 'firebase deploy' (Sincroniza Hosting, Rules y Cloud Functions).
+
+7. CONCLUSIÓN
+--------------------------------------------------------------------------------
+Cerezal de San Luis trasciende ser un simple CRUD; es una herramienta de 
+operación crítica que combina seguridad personal, privacidad de datos y una 
+experiencia de usuario premium para la gestión de propiedad horizontal moderna.
